@@ -4,34 +4,27 @@ import exeption.WrongPasswordException;
 import java.util.regex.Pattern;
 
 public class AccountServiceImpl {
-    private static final Pattern LOGIN_PATTERN = Pattern.compile("[A-Za-z0-9_]{1,20}");
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile("[A-Za-z0-9_]{1,20}");
+    private static final Pattern LOGINANDPASSWORD_PATTERN = Pattern.compile("[A-Za-z0-9_]{1,20}");
 
     public static void enterInAccount(String login, String password, String confirmPassword) {
         try {
-            enterLogin(login);
-            enterPassword(password, confirmPassword);
+            enterLoginAndPassword(login, password, confirmPassword);
         } catch (WrongLoginException e) {
-            System.out.println(e.getMessage());
+           throw new WrongLoginException (e.getMessage());
         } catch (WrongPasswordException e) {
-            System.out.println(e.getMessage());
-        }finally {
-            System.out.println("Задача отработана");
+            throw new WrongPasswordException(e.getMessage());
+        } finally {
+            System.out.println("Обработка выполнена");
         }
     }
 
-    private static void enterLogin(String login) throws WrongLoginException {
-        if (!LOGIN_PATTERN.matcher(login).matches()) {
+    private static void enterLoginAndPassword(String login, String password, String confirmPassword) {
+        if (!LOGINANDPASSWORD_PATTERN.matcher(login).matches()) {
             throw new WrongLoginException("Логин неверный, проверьте правильность символов");
-        }
-    }
-
-    private static void enterPassword(String password, String confirmPassword) throws WrongPasswordException {
-        if (!PASSWORD_PATTERN.matcher(password).matches()){
+        } else if (!LOGINANDPASSWORD_PATTERN.matcher(password).matches()) {
             throw new WrongPasswordException("Некорректный пароль");
-        }
-        if (!password.equals(confirmPassword)){
-            throw new WrongPasswordException("Пароли не совпадают");
+        } else if (!password.equals(confirmPassword)) {
+            throw new WrongPasswordException("Пароль не совпадает");
         }
     }
 }
